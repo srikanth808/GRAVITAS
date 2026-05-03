@@ -57,25 +57,12 @@ export async function POST(request: NextRequest) {
     // ── Extract text from PDF ──
     const buffer = Buffer.from(await file.arrayBuffer());
     
-    // ── Polyfills for Next.js Serverless environment ──
-    if (typeof global.DOMMatrix === 'undefined') {
-      (global as any).DOMMatrix = class DOMMatrix {};
-    }
-    if (typeof global.ImageData === 'undefined') {
-      (global as any).ImageData = class ImageData {};
-    }
-    if (typeof global.Path2D === 'undefined') {
-      (global as any).Path2D = class Path2D {};
-    }
-
     let extractedText = '';
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { PDFParse } = require('pdf-parse');
-      const parser = new PDFParse({ data: buffer });
-      const pdfData = await parser.getText();
+      const pdfParse = require('pdf-parse') as (buffer: Buffer) => Promise<{ text: string }>;
+      const pdfData = await pdfParse(buffer);
       extractedText = pdfData.text?.trim() ?? '';
-      await parser.destroy();
     } catch (pdfErr) {
       console.error('PDF parse error:', pdfErr);
       extractedText = '';
