@@ -57,6 +57,17 @@ export async function POST(request: NextRequest) {
     // ── Extract text from PDF ──
     const buffer = Buffer.from(await file.arrayBuffer());
     
+    // ── Polyfills for Next.js Serverless environment ──
+    if (typeof global.DOMMatrix === 'undefined') {
+      (global as any).DOMMatrix = class DOMMatrix {};
+    }
+    if (typeof global.ImageData === 'undefined') {
+      (global as any).ImageData = class ImageData {};
+    }
+    if (typeof global.Path2D === 'undefined') {
+      (global as any).Path2D = class Path2D {};
+    }
+
     let extractedText = '';
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports

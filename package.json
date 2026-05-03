@@ -9,7 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@napi-rs/canvas": "^0.1.100",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.105.1",
     "framer-motion": "^12.38.0",
