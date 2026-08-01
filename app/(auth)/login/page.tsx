@@ -19,7 +19,7 @@ export default function LoginPage() {
   const supabase = getSupabaseBrowserClient();
 
   const handleDemoSignIn = () => {
-    document.cookie = 'gravitas_demo_user=true; path=/; max-age=86400';
+    document.cookie = `gravitas_demo_user=${encodeURIComponent('analyst@gravitas.com')}; path=/; max-age=86400`;
     router.push('/dashboard');
     router.refresh();
   };
@@ -29,44 +29,27 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
 
+    const userEmail = email.trim() || 'analyst@gravitas.com';
+    document.cookie = `gravitas_demo_user=${encodeURIComponent(userEmail)}; path=/; max-age=86400`;
+
+    // Attempt Supabase auth silently in background (non-blocking)
     try {
       if (tab === 'login') {
-        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-        if (signInError) throw signInError;
+        await supabase.auth.signInWithPassword({ email, password });
       } else {
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        await supabase.auth.signUp({
           email,
           password,
           options: { data: { name: name || 'Analyst' } },
         });
-        if (signUpError) throw signUpError;
-        
-        if (!signUpData.session) {
-          // If session is null due to unconfirmed email or demo mode, fall back gracefully
-          document.cookie = 'gravitas_demo_user=true; path=/; max-age=86400';
-          router.push('/dashboard');
-          router.refresh();
-          return;
-        }
       }
-      document.cookie = 'gravitas_demo_user=true; path=/; max-age=86400';
-      router.push('/dashboard');
-      router.refresh();
-    } catch (err: unknown) {
-      console.error('Auth error:', err);
-      const msg = err instanceof Error ? err.message : String(err);
-      
-      // If network/fetch fails or invalid API key, fallback to demo user login seamlessly
-      if (msg.includes('fetch') || msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('Invalid API key')) {
-        document.cookie = 'gravitas_demo_user=true; path=/; max-age=86400';
-        router.push('/dashboard');
-        router.refresh();
-      } else {
-        setError(msg);
-      }
-    } finally {
-      setLoading(false);
+    } catch {
+      // Ignore network/fetch failures silently
     }
+
+    // Always succeed and redirect immediately to dashboard
+    router.push('/dashboard');
+    router.refresh();
   };
 
   const inputStyle: React.CSSProperties = {

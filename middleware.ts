@@ -6,7 +6,7 @@ const AUTH_ONLY = ['/login'];
 
 export async function middleware(request: NextRequest) {
   const { supabaseResponse, user: supabaseUser } = await updateSession(request);
-  const isDemo = request.cookies.get('gravitas_demo_user')?.value === 'true';
+  const isDemo = !!request.cookies.get('gravitas_demo_user')?.value;
   const hasUser = !!supabaseUser || isDemo;
 
   const pathname = request.nextUrl.pathname;

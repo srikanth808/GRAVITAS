@@ -17,14 +17,18 @@ export default async function IncidentLayout({
   } catch {}
 
   const cookieStore = await cookies();
-  const isDemo = cookieStore.get('gravitas_demo_user')?.value === 'true';
+  const demoCookie = cookieStore.get('gravitas_demo_user')?.value;
 
-  if (!userEmail && !isDemo) {
+  if (!userEmail && !demoCookie) {
     redirect('/login');
   }
 
-  if (!userEmail && isDemo) {
-    userEmail = 'analyst@gravitas.com';
+  if (!userEmail && demoCookie) {
+    try {
+      userEmail = decodeURIComponent(demoCookie);
+    } catch {
+      userEmail = 'analyst@gravitas.com';
+    }
   }
 
   return (
