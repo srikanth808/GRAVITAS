@@ -69,7 +69,9 @@ export default function DropZone() {
       }
 
       setState('success');
-      setTimeout(() => router.push('/dashboard'), 1200);
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 800);
     } catch {
       finishProgress();
       setState('error');
