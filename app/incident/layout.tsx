@@ -8,27 +8,31 @@ export default async function IncidentLayout({
 }: {
   children: React.ReactNode;
 }) {
-  let userEmail: string | undefined = undefined;
-
-  try {
-    const supabase = await createServerSupabaseClient();
-    const { data } = await supabase.auth.getUser();
-    userEmail = data.user?.email;
-  } catch {}
-
   const cookieStore = await cookies();
   const demoCookie = cookieStore.get('gravitas_demo_user')?.value;
 
-  if (!userEmail && !demoCookie) {
-    redirect('/login');
-  }
+  let userEmail: string | undefined = undefined;
 
-  if (!userEmail && demoCookie) {
+  if (demoCookie) {
     try {
       userEmail = decodeURIComponent(demoCookie);
     } catch {
       userEmail = 'analyst@gravitas.com';
     }
+  } else {
+    try {
+      const supabase = await createServerSupabaseClient();
+      const userPromise = supabase.auth.getUser();
+      const timeoutPromise = new Promise<{ data: { user: null } }>((resolve) =>
+        setTimeout(() => resolve({ data: { user: null } }), 1000)
+      );
+      const res = (await Promise.race([userPromise, timeoutPromise])) as { data: { user: { email?: string } | null } };
+      userEmail = res.data?.user?.email;
+    } catch {}
+  }
+
+  if (!userEmail && !demoCookie) {
+    redirect('/login');
   }
 
   return (

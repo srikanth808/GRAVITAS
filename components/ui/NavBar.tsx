@@ -20,13 +20,25 @@ export default function NavBar({ userEmail }: NavBarProps) {
   const router = useRouter();
   const supabase = getSupabaseBrowserClient();
 
+  const navigateTo = (href: string) => {
+    if (pathname === href) {
+      router.refresh();
+      return;
+    }
+    try {
+      router.push(href);
+      router.refresh();
+    } catch {
+      window.location.href = href;
+    }
+  };
+
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
     } catch {}
     document.cookie = 'gravitas_demo_user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    router.push('/login');
-    router.refresh();
+    window.location.href = '/login';
   };
 
   return (
@@ -48,7 +60,14 @@ export default function NavBar({ userEmail }: NavBarProps) {
       }}
     >
       {/* Logo */}
-      <Link href="/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <a
+        href="/dashboard"
+        onClick={(e) => {
+          e.preventDefault();
+          navigateTo('/dashboard');
+        }}
+        style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}
+      >
         <Shield size={20} color="#6c63ff" />
         <span
           style={{
@@ -61,16 +80,20 @@ export default function NavBar({ userEmail }: NavBarProps) {
           <span style={{ color: '#00d4ff' }}>GRAVI</span>
           <span style={{ color: '#6c63ff' }}>TAS</span>
         </span>
-      </Link>
+      </a>
 
       {/* Center nav */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
         {NAV_LINKS.map((link) => {
           const isActive = pathname.startsWith(link.href);
           return (
-            <Link
+            <a
               key={link.href}
               href={link.href}
+              onClick={(e) => {
+                e.preventDefault();
+                navigateTo(link.href);
+              }}
               style={{
                 position: 'relative',
                 padding: '6px 16px',
@@ -80,6 +103,7 @@ export default function NavBar({ userEmail }: NavBarProps) {
                 fontSize: '14px',
                 borderRadius: '6px',
                 transition: 'color 0.2s',
+                cursor: 'pointer',
               }}
             >
               {link.label}
@@ -103,7 +127,7 @@ export default function NavBar({ userEmail }: NavBarProps) {
                   />
                 )}
               </AnimatePresence>
-            </Link>
+            </a>
           );
         })}
       </div>
