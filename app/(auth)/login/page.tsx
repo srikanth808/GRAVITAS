@@ -28,16 +28,23 @@ export default function LoginPage() {
         const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
         if (signInError) throw signInError;
       } else {
-        const { error: signUpError } = await supabase.auth.signUp({
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: { data: { name } },
         });
         if (signUpError) throw signUpError;
+        
+        if (!signUpData.session) {
+          setError('Account created successfully! If email confirmation is enabled in your Supabase project, please check your inbox to confirm before signing in.');
+          setLoading(false);
+          return;
+        }
       }
       router.push('/dashboard');
       router.refresh();
     } catch (err: unknown) {
+      console.error('Auth error:', err);
       setError(err instanceof Error ? err.message : 'Authentication failed');
     } finally {
       setLoading(false);
