@@ -7,6 +7,7 @@ import StatCard from '@/components/ui/StatCard';
 import NavBar from '@/components/ui/NavBar';
 import type { StatsResponse } from '@/lib/types';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
+import { Download } from 'lucide-react';
 
 export default function UploadPage() {
   const [stats, setStats] = useState<StatsResponse | null>(null);
@@ -32,17 +33,45 @@ export default function UploadPage() {
           <motion.div
             initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
-            style={{ marginBottom: '36px' }}
+            style={{ marginBottom: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px' }}
           >
-            <p style={{ margin: 0, color: '#6c63ff', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em' }}>
-              Incident Intake System
-            </p>
-            <h1 style={{ margin: '8px 0 0', fontSize: '32px', fontWeight: 800, color: '#e2e8f0' }}>
-              Upload FIR Report
-            </h1>
-            <p style={{ margin: '8px 0 0', color: '#4a5568', fontSize: '14px', maxWidth: '480px' }}>
-              Drop a PDF First Information Report to automatically classify the crime type, severity, and extract key entities.
-            </p>
+            <div>
+              <p style={{ margin: 0, color: '#6c63ff', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                Incident Intake System
+              </p>
+              <h1 style={{ margin: '8px 0 0', fontSize: '32px', fontWeight: 800, color: '#e2e8f0' }}>
+                Upload FIR Report
+              </h1>
+              <p style={{ margin: '8px 0 0', color: '#4a5568', fontSize: '14px', maxWidth: '480px' }}>
+                Drop a PDF First Information Report to automatically classify the crime type, severity, and extract key entities.
+              </p>
+            </div>
+
+            <a
+              href="/sample_fir_report.pdf"
+              download="Sample_FIR_Report.pdf"
+              style={{ textDecoration: 'none' }}
+            >
+              <motion.button
+                whileHover={{ scale: 1.02, background: 'rgba(0,212,255,0.15)' }}
+                whileTap={{ scale: 0.98 }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '10px 16px',
+                  background: 'rgba(0,212,255,0.08)',
+                  border: '1px solid rgba(0,212,255,0.3)',
+                  borderRadius: '8px',
+                  color: '#00d4ff',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                <Download size={15} /> Download Sample FIR
+              </motion.button>
+            </a>
           </motion.div>
 
           {/* DropZone */}
