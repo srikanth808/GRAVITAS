@@ -32,17 +32,8 @@ All intelligence is immediately available on a secure, real-time analytics dashb
 
 <br />
 
-## 📸 Platform Previews
-
-> **Note:** To see the platform in action, click the Live Demo badge above!
-
 ### 📊 Intelligence Dashboard
-*(Add your screenshot here by replacing `public/screenshots/dashboard.png`)*
-<img src="/public/screenshots/dashboard.png" alt="GRAVITAS Dashboard" width="100%" />
-
-### 📄 Automated Intake System
-*(Add your screenshot here by replacing `public/screenshots/upload.png`)*
-<img src="/public/screenshots/upload.png" alt="FIR Upload Screen" width="100%" />
+<img src="./public/dashboard.png" alt="GRAVITAS Dashboard Preview" width="100%" />
 
 <br />
 
