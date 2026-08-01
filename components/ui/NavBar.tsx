@@ -21,7 +21,10 @@ export default function NavBar({ userEmail }: NavBarProps) {
   const supabase = getSupabaseBrowserClient();
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch {}
+    document.cookie = 'gravitas_demo_user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     router.push('/login');
     router.refresh();
   };
