@@ -87,10 +87,13 @@ function DashboardContent() {
             AI-powered crime incident analysis
           </p>
         </div>
-        <Link href="/upload">
+        <a href="/upload" style={{ textDecoration: 'none' }}>
           <motion.button
             whileHover={{ scale: 1.03, boxShadow: '0 4px 20px rgba(108,99,255,0.3)' }}
             whileTap={{ scale: 0.97 }}
+            onClick={() => {
+              window.location.href = '/upload';
+            }}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -107,7 +110,7 @@ function DashboardContent() {
           >
             <Plus size={16} /> New Report
           </motion.button>
-        </Link>
+        </a>
       </motion.div>
 
       {/* Stat Cards */}
